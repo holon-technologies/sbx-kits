@@ -3,8 +3,8 @@
 Public, versioned [Docker Sandbox](https://docs.docker.com/ai/sandboxes/)
 kits maintained by Holon Technologies.
 
-Each top-level kit directory is independently loadable. Releases are tagged for
-Git consumption and published as OCI artifacts to GitHub Container Registry.
+Each top-level kit directory is independently loadable. Public releases are
+tagged for Git consumption and mirrored to GitHub Container Registry.
 
 ## Available kits
 
@@ -26,14 +26,6 @@ Load the Git release into a new sandbox:
 ```sh
 sbx run \
   --kit "git+https://github.com/holon-technologies/sbx-kits.git#ref=v0.1.0&dir=holon-local-first" \
-  codex .
-```
-
-Or consume the corresponding OCI artifact:
-
-```sh
-sbx run \
-  --kit ghcr.io/holon-technologies/sbx-kit-holon-local-first:0.1.0 \
   codex .
 ```
 
