@@ -1,0 +1,48 @@
+name: Publish kits
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+
+      - name: Install current sbx release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          sbx_version=$(curl -fsSL \
+            -H "Authorization: Bearer ${GH_TOKEN}" \
+            https://api.github.com/repos/docker/sbx-releases/releases/latest \
+            | jq -r .tag_name)
+          curl -fsSL \
+            -H "Authorization: Bearer ${GH_TOKEN}" \
+            "https://github.com/docker/sbx-releases/releases/download/${sbx_version}/DockerSandboxes-linux.tar.gz" \
+            -o /tmp/DockerSandboxes-linux.tar.gz
+          tar xzf /tmp/DockerSandboxes-linux.tar.gz -C /tmp
+          sudo PREFIX="${HOME}/.docker/sbx" /tmp/docker-sbx/install.sh
+          echo "${HOME}/.docker/sbx/bin" >> "$GITHUB_PATH"
+
+      - name: Validate kits
+        run: ./scripts/validate.sh
+
+      - name: Sign in to GitHub Container Registry
+        env:
+          GHCR_TOKEN: ${{ github.token }}
+        run: echo "$GHCR_TOKEN" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+
+      - name: Publish Holon local-first kit
+        run: |
+          version="${GITHUB_REF_NAME#v}"
+          sbx kit push \
+            holon-local-first \
+            "ghcr.io/holon-technologies/sbx-kit-holon-local-first:${version}"

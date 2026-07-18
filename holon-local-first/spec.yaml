@@ -1,0 +1,112 @@
+schemaVersion: "1"
+kind: mixin
+name: holon-local-first
+displayName: Holon Local-First Stack
+description: Rust, Dioxus, SQLite, Iroh, and Compose tooling for Holon applications
+
+caps:
+  network:
+    allow:
+      # Debian and Ubuntu package mirrors used by the sandbox base images.
+      - deb.debian.org
+      - security.debian.org
+      - archive.ubuntu.com
+      - security.ubuntu.com
+      - ports.ubuntu.com
+      - download.docker.com
+
+      # Rust toolchains and crates.
+      - sh.rustup.rs
+      - static.rust-lang.org
+      - crates.io
+      - index.crates.io
+      - static.crates.io
+
+      # Source dependencies and pinned prebuilt Cargo tool releases.
+      - github.com
+      - api.github.com
+      - codeload.github.com
+      - raw.githubusercontent.com
+      - objects.githubusercontent.com
+      - release-assets.githubusercontent.com
+
+      # Iroh's public relay fleet for integration and protocol tests.
+      - "*.relay.iroh.network"
+
+      # Docker Compose image pulls.
+      - auth.docker.io
+      - registry-1.docker.io
+      - production.cloudflare.docker.com
+
+environment:
+  variables:
+    CARGO_TERM_COLOR: always
+    RUST_BACKTRACE: "1"
+
+commands:
+  install:
+    - command: >-
+        apt-get update &&
+        DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends
+        build-essential ca-certificates clang cmake curl file git lld
+        libayatana-appindicator3-dev librsvg2-dev libsqlite3-dev libssl-dev
+        libwebkit2gtk-4.1-dev libxdo-dev pkg-config protobuf-compiler
+        sqlite3 wget
+      user: "0"
+      description: Install native Rust, SQLite, and Dioxus Desktop dependencies
+
+    - command: >-
+        curl --proto '=https' --tlsv1.2 -fsSL https://sh.rustup.rs
+        -o /tmp/rustup-init.sh &&
+        sh /tmp/rustup-init.sh -y --profile minimal --default-toolchain 1.97.1 &&
+        /home/agent/.cargo/bin/rustup component add clippy rustfmt --toolchain 1.97.1 &&
+        /home/agent/.cargo/bin/rustup target add wasm32-unknown-unknown --toolchain 1.97.1
+      user: "1000"
+      description: Install Rust 1.97.1 with lint, formatting, and web targets
+
+    - command: >-
+        curl --proto '=https' --tlsv1.2 -fsSL
+        https://raw.githubusercontent.com/cargo-bins/cargo-binstall/v1.21.0/install-from-binstall-release.sh
+        -o /tmp/install-cargo-binstall.sh &&
+        BINSTALL_VERSION=1.21.0 sh /tmp/install-cargo-binstall.sh &&
+        /home/agent/.cargo/bin/cargo binstall --no-confirm
+        dioxus-cli@0.7.9 cargo-nextest@0.9.140 cargo-llvm-cov@0.8.7
+      user: "1000"
+      description: Install pinned Dioxus and Rust verification tools from prebuilt releases
+
+    - command: |
+        if ! grep -q '/home/agent/.cargo/env' /etc/sandbox-persistent.sh; then
+          echo '[ -f /home/agent/.cargo/env ] && source /home/agent/.cargo/env' >> /etc/sandbox-persistent.sh
+        fi
+      user: "0"
+      description: Put Rust and installed Cargo tools on PATH in every sandbox shell
+
+agentContext: |
+  ## Holon local-first stack
+
+  This workspace follows the Holon reusable stack. Keep product behavior in the
+  application's `SPEC.md` and use its `STACK.md` as the authoritative local copy
+  when present.
+
+  - Use a Cargo workspace with a shared Rust core. Tokio is the base async runtime;
+    use Kameo only where supervised long-lived workflows benefit from actor semantics.
+  - Keep domain crates independent of Dioxus, Kameo, Iroh, SQLite libraries, Axum,
+    Docker, operating-system APIs, and product-specific services.
+  - Native clients are local-first. Exchange versioned signed operations over Iroh;
+    never synchronize SQLite database files. Keep large content outside SQLite and
+    verify it by content hash.
+  - Durable state must survive abrupt termination. Persist accepted commands,
+    idempotency records, projection changes, and outbox entries transactionally.
+    Rebuild projections from retained operations or verified snapshots.
+  - Treat external integrations as replaceable adapters. Reconcile ambiguous side
+    effects before retrying, use bounded retry budgets, and expose terminal failures.
+  - Prefer Axum plus server-rendered templates, HTMX, and SSE for optional web UI.
+    Deploy coordinators with pinned multi-stage images, Docker Compose, and Caddy.
+  - Before reporting a Rust change complete, run the relevant subset of
+    `cargo fmt --all -- --check`, `cargo clippy --workspace --all-targets --all-features -- -D warnings`,
+    `cargo nextest run --workspace --all-features`, and `cargo test --doc --workspace`.
+    Validate Compose changes with `docker compose config`.
+
+  This Linux sandbox can build and test shared core, coordinator, web, Compose, and
+  Linux desktop code. Android needs an Android SDK/NDK; iOS builds require macOS and
+  Xcode. Do not claim those mobile targets were verified here.
