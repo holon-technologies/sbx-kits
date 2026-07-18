@@ -23,7 +23,7 @@ No credentials or private configuration are included.
 
 ```sh
 sbx run \
-  --kit "git+https://github.com/holon-technologies/sbx-kits.git#ref=v0.1.0&dir=holon-local-first" \
+  --kit "git+https://github.com/holon-technologies/sbx-kits.git#ref=v0.1.1&dir=holon-local-first" \
   codex /path/to/application
 ```
 
