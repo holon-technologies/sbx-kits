@@ -65,7 +65,7 @@ Every release must:
 
 1. Update [`CHANGELOG.md`](CHANGELOG.md).
 2. Pass validation and the real-sandbox smoke test.
-3. Use a signed, immutable `vX.Y.Z` tag.
+3. Use an annotated, immutable `vX.Y.Z` tag.
 4. Publish each changed kit as a versioned OCI artifact without moving a `latest` tag.
 
 ## Security
