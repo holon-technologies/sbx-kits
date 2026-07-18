@@ -3,6 +3,11 @@
 A Docker Sandbox mixin for applications based on Karteros, Holon Technologies'
 resilient local-first application stack.
 
+The canonical stack specification, reusable Rust patterns, and crash-recovery
+reference implementation live in the public
+[`holon-technologies/karteros`](https://github.com/holon-technologies/karteros/tree/v0.1.1)
+repository.
+
 ## Included toolchain
 
 | Component | Version |

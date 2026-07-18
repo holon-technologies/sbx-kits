@@ -12,6 +12,12 @@ tagged for Git consumption and mirrored to GitHub Container Registry.
 | --- | --- |
 | [`karteros`](karteros/) | Rust, Dioxus, SQLite, Iroh, and Docker Compose development for Karteros, Holon's resilient local-first application stack. |
 
+Karteros architecture, Rust patterns, and reference implementations are
+maintained separately in
+[`holon-technologies/karteros`](https://github.com/holon-technologies/karteros/tree/v0.1.1).
+The Sandbox kit intentionally owns only the development toolchain and agent
+environment.
+
 ## Use a released kit
 
 Allow the Holon GitHub organization as a kit publisher once:
