@@ -1,8 +1,8 @@
 schemaVersion: "1"
 kind: mixin
-name: holon-local-first
-displayName: Holon Local-First Stack
-description: Rust, Dioxus, SQLite, Iroh, and Compose tooling for Holon applications
+name: karteros
+displayName: Karteros
+description: Resilient local-first Rust application tooling from Holon Technologies
 
 caps:
   network:
@@ -82,11 +82,11 @@ commands:
       description: Put Rust and installed Cargo tools on PATH in every sandbox shell
 
 agentContext: |
-  ## Holon local-first stack
+  ## Karteros
 
-  This workspace follows the Holon reusable stack. Keep product behavior in the
-  application's `SPEC.md` and use its `STACK.md` as the authoritative local copy
-  when present.
+  This workspace follows Karteros, Holon Technologies' resilient local-first
+  application stack. Keep product behavior in the application's `SPEC.md` and use
+  its `STACK.md` as the authoritative local copy when present.
 
   - Use a Cargo workspace with a shared Rust core. Tokio is the base async runtime;
     use Kameo only where supervised long-lived workflows benefit from actor semantics.

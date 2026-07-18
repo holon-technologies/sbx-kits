@@ -2,7 +2,7 @@
 set -euo pipefail
 
 repository_root=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)
-kit_name=${1:-holon-local-first}
+kit_name=${1:-karteros}
 kit_directory="$repository_root/$kit_name"
 sandbox_name="holon-kit-smoke-$(date +%s)"
 workspace=$(mktemp -d)

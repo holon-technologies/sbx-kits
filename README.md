@@ -10,7 +10,7 @@ tagged for Git consumption and mirrored to GitHub Container Registry.
 
 | Kit | Purpose |
 | --- | --- |
-| [`holon-local-first`](holon-local-first/) | Rust, Dioxus, SQLite, Iroh, and Docker Compose development for the Holon local-first stack. |
+| [`karteros`](karteros/) | Rust, Dioxus, SQLite, Iroh, and Docker Compose development for Karteros, Holon's resilient local-first application stack. |
 
 ## Use a released kit
 
@@ -25,7 +25,7 @@ Load the Git release into a new sandbox:
 
 ```sh
 sbx run \
-  --kit "git+https://github.com/holon-technologies/sbx-kits.git#ref=v0.1.1&dir=holon-local-first" \
+  --kit "git+https://github.com/holon-technologies/sbx-kits.git#ref=v0.2.0&dir=karteros" \
   codex .
 ```
 
@@ -42,7 +42,7 @@ Requirements:
 
 ```sh
 ./scripts/validate.sh
-./scripts/smoke-test.sh holon-local-first
+./scripts/smoke-test.sh karteros
 ```
 
 The smoke test creates an isolated temporary sandbox, verifies the installed

@@ -40,9 +40,9 @@ jobs:
           GHCR_TOKEN: ${{ github.token }}
         run: echo "$GHCR_TOKEN" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
 
-      - name: Publish Holon local-first kit
+      - name: Publish Karteros kit
         run: |
           version="${GITHUB_REF_NAME#v}"
           sbx kit push \
-            holon-local-first \
-            "ghcr.io/holon-technologies/sbx-kit-holon-local-first:${version}"
+            karteros \
+            "ghcr.io/holon-technologies/sbx-kit-karteros:${version}"

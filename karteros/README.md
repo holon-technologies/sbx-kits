@@ -1,6 +1,7 @@
-# Holon Local-First Kit
+# Karteros Kit
 
-A Docker Sandbox mixin for applications based on the Holon local-first stack.
+A Docker Sandbox mixin for applications based on Karteros, Holon Technologies'
+resilient local-first application stack.
 
 ## Included toolchain
 
@@ -23,7 +24,7 @@ No credentials or private configuration are included.
 
 ```sh
 sbx run \
-  --kit "git+https://github.com/holon-technologies/sbx-kits.git#ref=v0.1.1&dir=holon-local-first" \
+  --kit "git+https://github.com/holon-technologies/sbx-kits.git#ref=v0.2.0&dir=karteros" \
   codex /path/to/application
 ```
 
@@ -36,7 +37,7 @@ From the repository root:
 
 ```sh
 ./scripts/validate.sh
-./scripts/smoke-test.sh holon-local-first
+./scripts/smoke-test.sh karteros
 ```
 
 Docker's kit format is experimental. Revalidate after upgrading `sbx`.
